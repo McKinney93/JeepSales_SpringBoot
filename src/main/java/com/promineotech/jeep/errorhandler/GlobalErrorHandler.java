@@ -22,7 +22,20 @@ public class GlobalErrorHandler {
   private enum LogStatus {
     STACK_TRACE, MESSAGE_ONLY;
   }
-  
+
+  /**
+   * 
+   * @param e
+   * @param webRequest
+   * @return
+   */
+  @ExceptionHandler(NoSuchElementException.class)
+  @ResponseStatus(code = HttpStatus.NOT_FOUND)
+  public Map<String, Object> handleNoSuchElementException(
+      NoSuchElementException e, WebRequest webRequest) {
+    return createExceptionMessage(e, HttpStatus.NOT_FOUND, webRequest, 
+        LogStatus.MESSAGE_ONLY);
+  }
   /**
    * 
    * @param e
@@ -33,7 +46,8 @@ public class GlobalErrorHandler {
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   public Map<String, Object> handleMethodArgumentTypeMismatchException(
       MethodArgumentTypeMismatchException e, WebRequest webRequest) {
-    return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, LogStatus.MESSAGE_ONLY);
+    return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, 
+        LogStatus.MESSAGE_ONLY);
   }
   
   /**
@@ -46,27 +60,16 @@ public class GlobalErrorHandler {
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   public Map<String, Object> handleConstraintViolationException(
       ConstraintViolationException e, WebRequest webRequest) {
-    return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, LogStatus.MESSAGE_ONLY);
+    return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, 
+        LogStatus.MESSAGE_ONLY);
   }
-  
-  /**
-   * 
-   * @param e
-   * @param webRequest
-   * @return
-   */
-  
-  @ExceptionHandler(NoSuchElementException.class)
-  @ResponseStatus(code = HttpStatus.NOT_FOUND)
-  public Map<String, Object> handleNoSuchElementException(
-      NoSuchElementException e, WebRequest webRequest) {
-    return createExceptionMessage(e, HttpStatus.NOT_FOUND, webRequest, LogStatus.STACK_TRACE);
-  } 
+ 
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
   public Map<String, Object> handleException(Exception e, WebRequest webRequest) {
-    return createExceptionMessage(e, HttpStatus.INTERNAL_SERVER_ERROR, webRequest, LogStatus.STACK_TRACE);
+    return createExceptionMessage(e, HttpStatus.INTERNAL_SERVER_ERROR, webRequest, 
+        LogStatus.STACK_TRACE);
   }
   
   /**
@@ -79,7 +82,8 @@ public class GlobalErrorHandler {
   private Map<String, Object> createExceptionMessage(Exception e, 
       HttpStatus status, WebRequest webRequest, LogStatus logStatus) {
     Map<String, Object> error = new HashMap<>();
-    String timestamp = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+    String timestamp = 
+        ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
     
     if(webRequest instanceof ServletWebRequest) {
       error.put("uri", ((ServletWebRequest)webRequest).getRequest().getRequestURI());
@@ -91,12 +95,11 @@ public class GlobalErrorHandler {
     error.put("reason", status.getReasonPhrase());
     
     if(logStatus == LogStatus.MESSAGE_ONLY) {
-      log.error("Exception: {}", e.toString());
+      log.error("Exception:{}", e.toString());
     }
     else {
-      log.error("Exception: ", e);
+      log.error("Exception:", e);
     }
-    
     return error;
   }
   

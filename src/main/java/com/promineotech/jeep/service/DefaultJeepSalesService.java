@@ -1,5 +1,6 @@
 package com.promineotech.jeep.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,12 @@ public class DefaultJeepSalesService implements JeepSalesService {
     
     List<Jeep> jeeps = jeepSalesDao.fetchJeeps(model, trim);
     
-    if(jeeps.isEmpty()) {
-      String msg = String.format("No jeeps found with model=%s and trim=%s", model, trim);
-          throw new NoSuchElementException(msg);
-    }
+    Collections.sort(jeeps);
+    
+//    if(jeeps.isEmpty()) {
+//      String msg = String.format("No jeeps found with model=%s and trim=%s", model, trim);
+//          throw new NoSuchElementException(msg);
+//    }
     return jeeps;
   }
 

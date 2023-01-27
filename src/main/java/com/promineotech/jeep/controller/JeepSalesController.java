@@ -21,12 +21,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 
-
-@OpenAPIDefinition(info = @Info(title = "Jeep Sales Service"), servers = {
-    @Server(url = "http://localhost:8080", description = "Local server")})
-
 @Validated
 @RequestMapping("/jeeps")
+@OpenAPIDefinition(info = @Info(title = "Jeep Sales Service"), servers = {
+    @Server(url = "http://localhost:8080", description = "Local server")})
 public interface JeepSalesController {
  
 
